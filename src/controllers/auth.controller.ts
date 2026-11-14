@@ -15,7 +15,7 @@ export const signup = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie(TOKEN_COOKIE_NAME, token, authCookieOptions);
 
-  return new ApiResponse(201, "Account created successfully", { user }).send(res);
+  return new ApiResponse(201, "Account created successfully", { user, token }).send(res);
 });
 
 export const signin = asyncHandler(async (req: Request, res: Response) => {
@@ -24,7 +24,7 @@ export const signin = asyncHandler(async (req: Request, res: Response) => {
 
   res.cookie(TOKEN_COOKIE_NAME, token, authCookieOptions);
 
-  return new ApiResponse(200, "Signed in successfully", { user }).send(res);
+  return new ApiResponse(200, "Signed in successfully", { user, token }).send(res);
 });
 
 export const signout = asyncHandler(async (_req: Request, res: Response) => {

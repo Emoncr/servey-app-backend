@@ -55,6 +55,7 @@ export const createApp = (): Express => {
   });
 
   app.use("/api", apiRoutes);
+  app.use(apiRoutes); // Fallback if frontend makes request without '/api'
 
   app.use(notFoundHandler);
   app.use(errorHandler);
