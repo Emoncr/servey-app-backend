@@ -3,14 +3,15 @@ import cors from "cors";
 import express, { Express } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
-import { env, isProduction } from "./config/env";
+import { isProduction } from "./config/env";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware";
 import apiRoutes from "./routes";
 import { ApiError } from "./utils/ApiError";
 
-const allowedOrigins = env.CLIENT_URL.split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+export const allowedOrigins = [
+  "http://localhost:3000",
+  "https://student-servey-app.vercel.app",
+];
 
 export const createApp = (): Express => {
   const app = express();
@@ -23,15 +24,22 @@ export const createApp = (): Express => {
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin) {
           callback(null, true);
           return;
         }
+
+        const normalizedOrigin = origin.replace(/\/$/, "");
+        if (allowedOrigins.includes(normalizedOrigin)) {
+          callback(null, true);
+          return;
+        }
+
         callback(new ApiError(403, `Origin ${origin} is not allowed by CORS`));
       },
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    })
+    }),
   );
 
   app.use(express.json({ limit: "100kb" }));
@@ -41,6 +49,10 @@ export const createApp = (): Express => {
   if (!isProduction) {
     app.use(morgan("dev"));
   }
+
+  app.use("/health", (_req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
 
   app.use("/api", apiRoutes);
 

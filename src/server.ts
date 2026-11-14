@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import app from "./app";
+import app, { allowedOrigins } from "./app";
 import { connectDB, disconnectDB } from "./config/db";
 import { env } from "./config/env";
 
@@ -10,7 +10,7 @@ const startServer = async (): Promise<void> => {
 
   server.listen(env.PORT, () => {
     console.log(`API server running on http://localhost:${env.PORT} (${env.NODE_ENV})`);
-    console.log(`CORS allowed origin(s): ${env.CLIENT_URL}`);
+    console.log(`CORS allowed origin(s): ${allowedOrigins.join(", ")}`);
   });
 
   const shutdown = async (signal: string): Promise<void> => {

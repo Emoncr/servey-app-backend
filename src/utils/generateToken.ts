@@ -14,7 +14,7 @@ export const generateToken = (userId: string, role = "admin"): string => {
 
 export const authCookieOptions: CookieOptions = {
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: isProduction ? "none" : "lax",
   secure: isProduction,
   maxAge: TOKEN_MAX_AGE_MS,
   path: "/",
@@ -22,7 +22,7 @@ export const authCookieOptions: CookieOptions = {
 
 export const clearCookieOptions: CookieOptions = {
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: isProduction ? "none" : "lax",
   secure: isProduction,
   path: "/",
 };
